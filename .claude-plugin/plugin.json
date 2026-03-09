@@ -1,0 +1,10 @@
+{
+  "name": "nanopub-agent-utilities",
+  "version": "1.0.0",
+  "description": "Claude Code skills for working with nanopublications",
+  "author": {
+    "url": "https://github.com/knowledgepixels"
+  },
+  "repository": "https://github.com/knowledgepixels/nanopub-agent-utilities",
+  "license": "MIT"
+}
