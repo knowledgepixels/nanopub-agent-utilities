@@ -108,7 +108,7 @@ sub:provenance {
 }
 
 sub:pubinfo {
-  this: dct:created "TIMESTAMP"^^xsd:dateTime ;
+  this: dct:created "TIMESTAMP"^^xsd:dateTime ;  # ← replace with current UTC time: run `date -u +"%Y-%m-%dT%H:%M:%SZ"`
     dct:creator orcid:USER-ORCID ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
     npx:embeds sub:query-local-name ;

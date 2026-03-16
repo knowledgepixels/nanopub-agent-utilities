@@ -55,7 +55,7 @@ Write the updated nanopub directly as a TriG file in `tmp/`. Use a placeholder b
 
 Start from the fetched TriG and apply the confirmed changes:
 - Replace each targeted predicate–object pair with the new value
-- Update `dct:created` to the current UTC timestamp (e.g. `"2025-01-15T12:00:00Z"^^xsd:dateTime`)
+- Update `dct:created` to the current UTC timestamp by running `date -u +"%Y-%m-%dT%H:%M:%SZ"` (e.g. `"2025-01-15T12:00:00Z"^^xsd:dateTime`)
 - Use the user's ORCID (from `~/.nanopub/profile.yaml`) for `prov:wasAttributedTo` and `dct:creator`. Do **not** copy the original author's ORCID.
 - Replace the original trusty URI throughout with the temp placeholder (`http://purl.org/nanopub/temp/np001/`)
 - Add `npx:supersedes <original-trusty-uri>` in pubinfo, keeping it pointing to the **original** URI
@@ -90,7 +90,7 @@ sub:provenance {
 }
 
 sub:pubinfo {
-  this: dct:created "TIMESTAMP"^^xsd:dateTime ;
+  this: dct:created "TIMESTAMP"^^xsd:dateTime ;  # ← replace with current UTC time: run `date -u +"%Y-%m-%dT%H:%M:%SZ"`
     dct:creator orcid:USER-ORCID ;
     # ... other pubinfo triples from original ...
     npx:supersedes <original-trusty-uri> .
