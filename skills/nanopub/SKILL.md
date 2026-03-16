@@ -53,6 +53,20 @@ bash skills/nanopub/scripts/download-queries.sh
 
 This is useful for browsing, searching, or analyzing the full set of available queries offline. Files are named `<trusty-id>_<label>.trig`. Re-running the script skips already-downloaded files.
 
+**Downloading all assertion templates locally:**
+
+Similarly, run the [assertion template download script](scripts/download-assertion-templates.sh) to fetch all assertion template nanopublications into the [assertion-templates/](assertion-templates/) folder:
+
+```bash
+bash skills/nanopub/scripts/download-assertion-templates.sh
+```
+
+Assertion templates define the structure for creating nanopubs of a specific type (e.g. expressing a claim, defining a class, declaring event participation). They can be listed via the API:
+
+```bash
+curl -s "https://query.knowledgepixels.com/api/RA6bgrU3Ezfg5VAiLru0BFYHaSj6vZU6jJTscxNl8Wqvc/get-assertion-templates"
+```
+
 To browse the OpenAPI spec for a specific published query:
 
 ```
