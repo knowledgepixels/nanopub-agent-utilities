@@ -104,17 +104,26 @@ sub:assertion {
 }
 
 sub:provenance {
-  sub:assertion prov:wasAttributedTo orcid:USER-ORCID .
+  # Use one or both depending on the origin of the assertion content:
+  # If content was derived/extracted from an external source:
+  # sub:assertion prov:wasDerivedFrom <source-url> .
+  # If the user authored the content:
+  # sub:assertion prov:wasAttributedTo orcid:USER-ORCID .
+  # If both (e.g. user modified content from an external source), include both triples.
 }
 
 sub:pubinfo {
   this: dct:created "TIMESTAMP"^^xsd:dateTime ;  # ← replace with current UTC time: run `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+    rdfs:label "short human-readable label" ;  # can be omitted if an introduced resource already has an rdfs:label in the assertion
     dct:creator orcid:USER-ORCID ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-    npx:embeds sub:query-local-name ;
-    npx:wasCreatedAt <https://nanodash.knowledgepixels.com/> .
+    npx:embeds sub:query-local-name .
     # only if supersedes:
     # npx:supersedes <original-nanopub-uri> .
+    # only if the nanopub introduces a new concept/resource as its main element:
+    # npx:introduces <main-element-IRI> .
+    # only if created at a specific tool instance (e.g. nanodash):
+    # npx:wasCreatedAt <https://nanodash.knowledgepixels.com/> .
 }
 ```
 
@@ -199,3 +208,7 @@ Show:
 - Never copy the original nanopub's author ORCID into `dct:creator`/`prov:wasAttributedTo` — always use the current user's ORCID from their profile.
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
 - The grlc implicit parameter convention: variables prefixed `?__` in SPARQL are treated as injectable query parameters by the grlc API.
+- Only add `npx:wasCreatedAt` if the nanopub was actually created at that specific tool instance. Do not add it by default.
+- Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
+- Add `npx:introduces` in pubinfo pointing to the main element of the assertion when the nanopub introduces a new concept or resource (e.g. a new shape, class, or query definition).
+- Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph.
