@@ -1,0 +1,102 @@
+@prefix this: <https://w3id.org/np/RA9_MDt_BeNkAvLf1ZqUky5aaNWAGZPB1DcupXwOS3UQE> .
+@prefix sub: <https://w3id.org/np/RA9_MDt_BeNkAvLf1ZqUky5aaNWAGZPB1DcupXwOS3UQE/> .
+@prefix np: <http://www.nanopub.org/nschema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix nt: <https://w3id.org/np/o/ntemplate/> .
+@prefix npx: <http://purl.org/nanopub/x/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix orcid: <https://orcid.org/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+sub:Head {
+  this: a np:Nanopublication;
+    np:hasAssertion sub:assertion;
+    np:hasProvenance sub:provenance;
+    np:hasPublicationInfo sub:pubinfo .
+}
+
+sub:assertion {
+  <https://schema.org/articleBody> rdfs:label "has the body content" .
+  
+  <https://schema.org/datePublished> rdfs:label "was published on" .
+  
+  <https://schema.org/headline> rdfs:label "has the title" .
+  
+  <https://schema.org/isPartOf> rdfs:label "is part of" .
+  
+  <https://schema.org/url> rdfs:label "is available at" .
+  
+  sub:assertion a nt:AssertionTemplate;
+    rdfs:label "Publish a news article to a Space";
+    nt:hasNanopubLabelPattern "${headline}";
+    nt:hasStatement sub:st0, sub:st1, sub:st2, sub:st3, sub:st4, sub:st5 .
+  
+  sub:body a nt:LongLiteralPlaceholder .
+  
+  sub:datePublished a nt:LiteralPlaceholder;
+    nt:hasDatatype xsd:date .
+  
+  sub:externalUrl a nt:ExternalUriPlaceholder .
+  
+  sub:headline a nt:LiteralPlaceholder .
+  
+  sub:newsItem a nt:IntroducedResource .
+  
+  sub:space a nt:GuidedChoicePlaceholder;
+    nt:possibleValuesFromApi "https://w3id.org/np/l/nanopub-query-1.1/api/RAyMrQ89RECTi9gZK5q7gjL1wKTiP8StkLy0NIkkCiyew/find-things?type=https://w3id.org/kpxl/gen/terms/Space" .
+  
+  sub:st0 rdf:object sub:headline;
+    rdf:predicate <https://schema.org/headline>;
+    rdf:subject sub:newsItem .
+  
+  sub:st1 rdf:object sub:space;
+    rdf:predicate <https://schema.org/isPartOf>;
+    rdf:subject sub:newsItem .
+  
+  sub:st2 rdf:object <https://schema.org/NewsArticle>;
+    rdf:predicate rdf:type;
+    rdf:subject sub:newsItem .
+  
+  sub:st3 rdf:object sub:body;
+    rdf:predicate <https://schema.org/articleBody>;
+    rdf:subject sub:newsItem .
+  
+  sub:st4 a nt:OptionalStatement;
+    rdf:object sub:datePublished;
+    rdf:predicate <https://schema.org/datePublished>;
+    rdf:subject sub:newsItem .
+  
+  sub:st5 a nt:OptionalStatement;
+    rdf:object sub:externalUrl;
+    rdf:predicate <https://schema.org/url>;
+    rdf:subject sub:newsItem .
+}
+
+sub:provenance {
+  sub:assertion prov:wasAttributedTo orcid:0000-0001-8492-0354 .
+}
+
+sub:pubinfo {
+  orcid:0000-0001-8492-0354 foaf:name "Ashley Caselli" .
+  
+  this: dct:created "2025-11-06T11:34:20.837Z"^^xsd:dateTime;
+    dct:creator orcid:0000-0001-8492-0354;
+    dct:license <https://creativecommons.org/licenses/by/4.0/>;
+    npx:supersedes <https://w3id.org/np/RADzwLzDPR1Fjl2AcxxLS4JEvvnk8r2YMsobbZADgwvuM>;
+    npx:wasCreatedAt <https://nanodash.knowledgepixels.com/>;
+    rdfs:label "Publish a news article to a Space";
+    nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
+    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RA0J4vUn_dekg-U1kK3AOEt02p9mT2WO03uGxLDec1jLw>,
+      <https://w3id.org/np/RAoTD7udB2KtUuOuAe74tJi1t3VzK0DyWS7rYVAq1GRvw>, <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
+    nt:wasCreatedFromTemplate <https://w3id.org/np/RA1XuAdO6LOtlPJgWiytJHFuK4BFHjQK5x7d9FVymzFnc> .
+  
+  sub:sig npx:hasAlgorithm "RSA";
+    npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaQXE2B2hJ6QdWxaWerU4F/XOtCQdj2OkdrIYd1kpMY9hIUh8boxaO3uOBeqvvqKLf5HjpRF4DT1eghOSsa2Dhd5HRTM/XIamvwWkHpN4oB3Ml19pAAzjTqczYmFLfgG67mGL5+vSA8VEdHtKQCrvP4SpTibMBP1qaxt3k1tqD6wIDAQAB";
+    npx:hasSignature "dLfoW73BwUvFMkNzyBiBeEWm2PZkRX4sMQxcF8gmfo+3U8unqm7lRCUR5r9o23X/G8z1oGU/a8kEgibv6tw2lfeAn7V71TaVy8hntfJvk3z2ZxIi4l4w0agtg8RFgFk/Pw5rnYXqLK8nUx26uGvl/L+KwCiIWJpguoibIaSAueY=";
+    npx:hasSignatureTarget this:;
+    npx:signedBy orcid:0000-0001-8492-0354 .
+}
+
