@@ -43,6 +43,16 @@ curl -s "https://query.knowledgepixels.com/api/RAQqjXQYlxYQeI4Y3UQy9OrD5Jx1E3PJ8
 
 This returns all published query templates and can be used as a starting point to find queries relevant to a given task.
 
+**Downloading all query templates locally:**
+
+Run the [download script](scripts/download-queries.sh) to fetch all query template nanopublications as individual TriG files into the [queries/](queries/) folder:
+
+```bash
+bash skills/nanopub/scripts/download-queries.sh
+```
+
+This is useful for browsing, searching, or analyzing the full set of available queries offline. Files are named `<trusty-id>_<label>.trig`. Re-running the script skips already-downloaded files.
+
 To browse the OpenAPI spec for a specific published query:
 
 ```
