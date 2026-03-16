@@ -139,7 +139,30 @@ grep "signedBy" tmp/<name>-signed.trig
 
 If `npx:signedBy` is absent, the user's ORCID was not found in the profile. Stop, ask the user to add it to `~/.nanopub/profile.yaml`, and re-sign.
 
-### 8. Ask about publishing target, then publish
+### 8. Test the query before publishing
+
+**Always test a query template nanopub before publishing.** Use the `_nanopub_trig` parameter on a live Nanopub Query instance to preview and execute the query without publishing it first.
+
+```bash
+# Base64url-encode the signed nanopub
+NP_B64=$(base64 -w0 tmp/<name>-signed.trig | tr '+/' '-_' | tr -d '=')
+
+# Extract the artifact code from the signed file
+ARTIFACT=$(head -1 tmp/<name>-signed.trig | grep -oP 'RA[A-Za-z0-9_-]{43}')
+
+# Test via the API (replace <query-local-name> with the query's local name)
+curl -s "https://query.knowledgepixels.com/api/${ARTIFACT}/<query-local-name>?<param>=<value>&_nanopub_trig=${NP_B64}"
+```
+
+You can also open it in the OpenAPI UI for interactive testing:
+
+```
+https://query.knowledgepixels.com/openapi/?url=spec/${ARTIFACT}/<query-local-name>&_nanopub_trig=${NP_B64}
+```
+
+Verify the results look correct before proceeding to publish. If the query returns errors or unexpected results, go back and fix the SPARQL, re-create the TriG file, and re-sign.
+
+### 9. Ask about publishing target, then publish
 
 Ask: **test server or live network?**
 
@@ -151,7 +174,7 @@ java -jar $JAR publish --server https://test.registry.knowledgepixels.com/ tmp/<
 java -jar $JAR publish tmp/<name>-signed.trig
 ```
 
-### 9. Retract the old nanopub (if supersedes or if a bad version was published)
+### 10. Retract the old nanopub (if supersedes or if a bad version was published)
 
 ```bash
 java -jar $JAR retract -i <old-nanopub-uri> -p
@@ -159,7 +182,7 @@ java -jar $JAR retract -i <old-nanopub-uri> -p
 
 The `-p` flag publishes the retraction immediately.
 
-### 10. Report result
+### 11. Report result
 
 Show:
 - The new nanopub trusty URI

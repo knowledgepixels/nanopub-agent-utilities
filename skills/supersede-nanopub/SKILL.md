@@ -118,7 +118,30 @@ grep "signedBy" tmp/<name>-signed.trig
 
 If `npx:signedBy` is absent, the user's ORCID was not found in the profile. Stop, ask the user to add it to `~/.nanopub/profile.yaml`, and re-sign.
 
-### 7. Ask about publishing target, then publish
+### 7. Test query template nanopubs before publishing
+
+If the nanopub contains a grlc query template (i.e. has a `grlc:sparql` predicate in its assertion), **always test it before publishing.** Use the `_nanopub_trig` parameter on a live Nanopub Query instance to preview and execute the query without publishing.
+
+```bash
+# Base64url-encode the signed nanopub
+NP_B64=$(base64 -w0 tmp/<name>-signed.trig | tr '+/' '-_' | tr -d '=')
+
+# Extract the artifact code from the signed file
+ARTIFACT=$(head -1 tmp/<name>-signed.trig | grep -oP 'RA[A-Za-z0-9_-]{43}')
+
+# Test via the API (replace <query-local-name> with the query's local name)
+curl -s "https://query.knowledgepixels.com/api/${ARTIFACT}/<query-local-name>?<param>=<value>&_nanopub_trig=${NP_B64}"
+```
+
+You can also open it in the OpenAPI UI for interactive testing:
+
+```
+https://query.knowledgepixels.com/openapi/?url=spec/${ARTIFACT}/<query-local-name>&_nanopub_trig=${NP_B64}
+```
+
+Verify the results look correct before proceeding to publish. If the query returns errors or unexpected results, go back and fix the TriG file and re-sign.
+
+### 8. Ask about publishing target, then publish
 
 Ask: **test server or live network?**
 
@@ -130,7 +153,7 @@ java -jar $JAR publish --server https://test.registry.knowledgepixels.com/ tmp/<
 java -jar $JAR publish tmp/<name>-signed.trig
 ```
 
-### 8. Retract the old nanopub (optional)
+### 9. Retract the old nanopub (optional)
 
 `npx:supersedes` signals that the new nanopub replaces the old one, but the old nanopub remains accessible. Ask the user if they also want to retract the original:
 
@@ -140,7 +163,7 @@ java -jar $JAR retract -i <old-nanopub-uri> -p
 
 The `-p` flag publishes the retraction immediately.
 
-### 9. Report result
+### 10. Report result
 
 Show:
 - The new nanopub trusty URI
