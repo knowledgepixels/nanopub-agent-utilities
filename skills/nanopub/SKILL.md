@@ -61,13 +61,23 @@ https://query.knowledgepixels.com/openapi/?url=spec/<ARTIFACT-CODE>/<query-local
 
 Where `<ARTIFACT-CODE>` is the trusty ID (e.g. `RAxxx...`) and `<query-local-name>` is the query's local name from the assertion.
 
+**grlc query template syntax:**
+
+Nanopub SPARQL templates use an extended version of the grlc syntax for placeholders:
+
+- **Required placeholders** start with a single underscore: `?_name` (literal) or `?_resource_iri` (IRI, suffix `_iri`)
+- **Optional placeholders** start with two underscores: `?__filter_iri` or `?__filtertext` — these don't need to be filled before running the query
+- **Multi-value placeholders** have the suffix `_multi` (literal) or `_multi_iri` (IRI), e.g. `?_resource_multi_iri`. These accept 1 or more values and require a `values ?_resource_multi_iri {}` statement in the SPARQL to indicate where values are filled in
+- **Optional multi-value placeholders** combine both: `?__resource_multi_iri` accepts 0 or more values
+
+**API parameter naming:** The SPARQL variable name is stripped of its prefix and suffix to form the API parameter name. For example, `?_user_iri` becomes just `user` in the API, not `_user_iri`.
+
 **Calling a query via the API:**
 
 ```bash
 curl -s "https://query.knowledgepixels.com/api/<ARTIFACT-CODE>/<query-local-name>?<param1>=<value1>&<param2>=<value2>"
 ```
 
-- Parameters correspond to grlc implicit parameters (`?__paramName` variables in the SPARQL)
 - The response is typically CSV or JSON depending on the `Accept` header
 - Add `Accept: text/csv` for CSV or `Accept: application/json` for JSON results
 
