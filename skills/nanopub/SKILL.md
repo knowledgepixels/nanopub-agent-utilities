@@ -6,6 +6,108 @@ argument-hint: [nanopub URL, description, or action]
 
 Help the user work with nanopublications. This includes creating new nanopubs, fetching and inspecting existing ones, superseding or retracting nanopubs, and publishing to the test server or live network.
 
+## Creating an Agent/Bot Identity
+
+To publish nanopubs on behalf of a software agent (bot), you need to create a dedicated identity with its own key pair and introduction nanopub.
+
+### Generate an RSA key pair
+
+```bash
+openssl genrsa -out ~/.nanopub/<agent>_id_rsa 2048
+openssl rsa -in ~/.nanopub/<agent>_id_rsa -pubout -outform PEM -out ~/.nanopub/<agent>_id_rsa.pub
+```
+
+Extract the public key as a single-line base64 string (needed for the introduction nanopub):
+
+```bash
+grep -v '^\-' ~/.nanopub/<agent>_id_rsa.pub | tr -d '\n'
+```
+
+**Never delete or alter key files in `~/.nanopub/`** — they are required to sign and retract nanopubs published with that identity. Losing a key means losing the ability to manage those nanopubs.
+
+### Create an introduction nanopub
+
+The introduction nanopub declares the agent's identity, links it to an owner (via ORCID), and registers its public key. The agent's IRI is typically a sub-IRI of this nanopub itself (e.g. `sub:agent-name`), which gets resolved to a full trusty URI after signing.
+
+```turtle
+@prefix this: <http://purl.org/nanopub/temp/np001/> .
+@prefix sub: <http://purl.org/nanopub/temp/np001/> .
+@prefix np: <http://www.nanopub.org/nschema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix npx: <http://purl.org/nanopub/x/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix orcid: <https://orcid.org/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+sub:Head {
+  this: a np:Nanopublication ;
+    np:hasAssertion sub:assertion ;
+    np:hasProvenance sub:provenance ;
+    np:hasPublicationInfo sub:pubinfo .
+}
+
+sub:assertion {
+  sub:agent-name a npx:Bot, npx:SoftwareAgent ;
+    foaf:name "Agent Display Name" ;
+    <http://purl.org/vocab/frbr/core#owner> orcid:OWNER-ORCID .
+
+  sub:decl npx:declaredBy sub:agent-name ;
+    npx:hasAlgorithm "RSA" ;
+    npx:hasPublicKey "PUBLIC-KEY-BASE64" .
+}
+
+sub:provenance {
+  sub:assertion prov:wasAttributedTo orcid:OWNER-ORCID .
+}
+
+sub:pubinfo {
+  this: dct:created "TIMESTAMP"^^xsd:dateTime ;
+    rdfs:label "Agent Display Name" ;
+    dct:creator sub:agent-name ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    npx:hasNanopubType npx:declaredBy ;
+    npx:introduces sub:agent-name .
+
+  orcid:OWNER-ORCID foaf:name "Owner Name" .
+}
+```
+
+### Sign and publish the introduction
+
+Sign the introduction with the **agent's own key** (not the owner's key):
+
+```bash
+java -jar "$JAR" sign -k ~/.nanopub/<agent>_id_rsa -o tmp/<agent>-intro-signed.trig tmp/<agent>-intro.trig
+java -jar "$JAR" publish tmp/<agent>-intro-signed.trig
+```
+
+After publishing, note the trusty URI — the agent's IRI becomes `<trusty-uri>/<agent-name>` (e.g. `https://w3id.org/np/RAxxxxx/agent-name`). Use this IRI as `dct:creator` and for `-s` when signing/retracting nanopubs with this agent.
+
+### Using the agent identity
+
+When creating nanopubs as this agent, sign with `-k` and use the agent IRI as creator:
+
+```bash
+java -jar "$JAR" sign -k ~/.nanopub/<agent>_id_rsa -o tmp/<name>-signed.trig tmp/<name>.trig
+```
+
+When retracting, specify the agent as signer:
+
+```bash
+java -jar "$JAR" retract -i <nanopub-uri> -k ~/.nanopub/<agent>_id_rsa -s <agent-IRI> -p
+```
+
+## Nanopublication Structure
+
+Every nanopub (`.trig` file) contains four named graphs:
+
+1. **Head** — links to the other three graphs
+2. **Assertion** — the semantic claims (domain-specific RDF triples)
+3. **Provenance** — attribution and source references (e.g. `prov:wasAttributedTo`, `prov:wasDerivedFrom`)
+4. **PublicationInfo** — metadata (creator, timestamp, license), and RSA signature (in signed versions)
+
 ## Workflow
 
 ### 1. Determine the action
@@ -184,7 +286,7 @@ sub:pubinfo {
 }
 ```
 
-### 4. Sign
+### 4. Validate and sign
 
 First, ensure the nanopub CLI jar is available. If not already present, download the latest release from Maven Central:
 
@@ -194,7 +296,24 @@ JAR="nanopub-${NP_VERSION}-jar-with-dependencies.jar"
 if [ ! -f "$JAR" ]; then
   curl -L -o "$JAR" "https://repo1.maven.org/maven2/org/nanopub/nanopub/${NP_VERSION}/${JAR}"
 fi
+```
+
+**Validate** the TriG file before signing to catch structural errors early:
+
+```bash
+java -jar "$JAR" check tmp/<name>.trig
+```
+
+**Sign** with the default user key (from `~/.nanopub/profile.yaml`):
+
+```bash
 java -jar "$JAR" sign -o tmp/<name>-signed.trig tmp/<name>.trig
+```
+
+To sign with a **specific key** (e.g. for a bot identity):
+
+```bash
+java -jar "$JAR" sign -k ~/.nanopub/<bot>_id_rsa -o tmp/<name>-signed.trig tmp/<name>.trig
 ```
 
 **After signing, always verify** that `npx:signedBy` is present before publishing:
@@ -224,12 +343,32 @@ java -jar $JAR publish tmp/<name>-signed.trig
 ### 7. Retract a nanopub (if a bad version was published)
 
 ```bash
+# Retract using the default user key:
 java -jar $JAR retract -i <nanopub-uri> -p
+
+# Retract using a specific key (e.g. for bot nanopubs) — requires -s <signer-IRI>:
+java -jar $JAR retract -i <nanopub-uri> -k ~/.nanopub/<bot>_id_rsa -s <signer-IRI> -p
 ```
 
-The `-p` flag publishes the retraction immediately.
+The `-p` flag publishes the retraction immediately. When using a specific key (`-k`), you must also specify the signer IRI (`-s`), which can be an ORCID or a bot IRI.
 
-### 8. Report result
+### 8. Create a nanopub index
+
+A nanopub index groups multiple nanopubs under a single entry point:
+
+```bash
+java -jar $JAR mkindex -o index.trig -t "Index title" file1.trig file2.trig ...
+```
+
+To supersede an existing index:
+
+```bash
+java -jar $JAR mkindex -x <old-index-uri> -o new-index.trig -t "Index title" file1.trig file2.trig ...
+```
+
+The `-x` flag automatically adds the `npx:supersedes` link. After creating, sign and publish as usual.
+
+### 9. Report result
 
 Show:
 - The new nanopub trusty URI
@@ -249,3 +388,7 @@ Show:
 - Add `npx:introduces` in pubinfo pointing to the main element of the assertion when the nanopub introduces a new concept or resource (e.g. a new shape, class, or query definition).
 - Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph.
 - Only add `npx:wasCreatedAt` if the nanopub was actually created at that specific tool instance. Do not add it by default.
+- The temp URI **must** use the `http://purl.org/nanopub/temp/` prefix (e.g. `http://purl.org/nanopub/temp/np001/`). Using `https://w3id.org/np/temp` instead causes the signed trusty URI to be malformed.
+- **Personal information policy**: Only include personal information (names, emails, affiliations, ORCIDs) in a nanopub if it is already permanently and openly published (e.g. in a published paper or made available by the person under an open license).
+- When it seems likely that a similar nanopub may already exist on the network (e.g. for well-known resources, popular DOIs, or common assertions), consider checking for duplicates before creating a new one. DOIs are case-insensitive but the nanopub network treats different cases as separate URIs.
+- Always validate a TriG file with `check` before signing to catch structural errors early.
