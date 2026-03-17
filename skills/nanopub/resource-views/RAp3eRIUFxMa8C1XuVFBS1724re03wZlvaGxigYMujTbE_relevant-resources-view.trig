@@ -1,0 +1,68 @@
+@prefix this: <https://w3id.org/np/RAp3eRIUFxMa8C1XuVFBS1724re03wZlvaGxigYMujTbE> .
+@prefix sub: <https://w3id.org/np/RAp3eRIUFxMa8C1XuVFBS1724re03wZlvaGxigYMujTbE/> .
+@prefix np: <http://www.nanopub.org/nschema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix nt: <https://w3id.org/np/o/ntemplate/> .
+@prefix npx: <http://purl.org/nanopub/x/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix orcid: <https://orcid.org/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+sub:Head {
+  this: a np:Nanopublication;
+    np:hasAssertion sub:assertion;
+    np:hasProvenance sub:provenance;
+    np:hasPublicationInfo sub:pubinfo .
+}
+
+sub:assertion {
+  sub:addAction a <https://w3id.org/kpxl/gen/terms/ViewResultAction>;
+    rdfs:label "add...";
+    <https://w3id.org/kpxl/gen/terms/hasActionTemplate> <https://w3id.org/np/RABLkA6ztDEM4CDwwTCDlSRh01h00FIx2zPF6ueqxB62A>;
+    <https://w3id.org/kpxl/gen/terms/hasActionTemplatePartField> "resource";
+    <https://w3id.org/kpxl/gen/terms/hasActionTemplateQueryMapping> "void";
+    <https://w3id.org/kpxl/gen/terms/hasActionTemplateTargetField> "entity" .
+  
+  sub:relevant-resource-view a <https://w3id.org/kpxl/gen/terms/ResourceView>, <https://w3id.org/kpxl/gen/terms/TabularView>;
+    dct:isVersionOf sub:relevant-resource-view-kind;
+    dct:title "Relevant resources";
+    rdfs:label "Relevant resources view";
+    <https://w3id.org/kpxl/gen/terms/hasStructuralPosition> "4.2.relevantResources";
+    <https://w3id.org/kpxl/gen/terms/hasViewAction> sub:addAction;
+    <https://w3id.org/kpxl/gen/terms/hasViewQuery> <https://w3id.org/np/RARwzupBlpiAh4OnktfjIT4LF6R4RKIWm3LWsyrcDQhqM/get-relevant-resources>;
+    <https://w3id.org/kpxl/gen/terms/hasViewQueryTargetField> "entity" .
+}
+
+sub:provenance {
+  sub:assertion prov:wasAttributedTo orcid:0000-0002-1267-0234 .
+}
+
+sub:pubinfo {
+  orcid:0000-0002-1267-0234 foaf:name "Tobias Kuhn" .
+  
+  <https://w3id.org/np/RABLkA6ztDEM4CDwwTCDlSRh01h00FIx2zPF6ueqxB62A> nt:hasLabelFromApi
+      "Expressing something is relevant for something" .
+  
+  <https://w3id.org/np/RARwzupBlpiAh4OnktfjIT4LF6R4RKIWm3LWsyrcDQhqM/get-relevant-resources>
+    nt:hasLabelFromApi "Get relevant resources - This query returns the relevant resources for a given entity (e.g. a Space)." .
+  
+  this: dct:created "2026-02-12T06:36:59.567Z"^^xsd:dateTime;
+    dct:creator orcid:0000-0002-1267-0234;
+    dct:license <https://creativecommons.org/licenses/by/4.0/>;
+    npx:embeds sub:relevant-resource-view;
+    npx:introduces sub:relevant-resource-view-kind;
+    npx:wasCreatedAt <https://nanodash.knowledgepixels.com/>;
+    nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
+    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RA0J4vUn_dekg-U1kK3AOEt02p9mT2WO03uGxLDec1jLw>,
+      <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
+    nt:wasCreatedFromTemplate <https://w3id.org/np/RARLsTlqbTesu1b0WJZ-zL1z96xumOiqbK3l_vV6iZoww> .
+  
+  sub:sig npx:hasAlgorithm "RSA";
+    npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4Wj537OijfOWVtsHMznuXKISqBhtGDQZfdO6pbb4hg9EHMcUFGTLbWaPrP783PHv8HMAAPjvEkHLaOHMIknqhaIa5236lfBO3r+ljVdYBElBcLvROmwG+ZGtmPNZf7lMhI15xf5TfoaSa84AFRd5J2EXekK6PhaFQhRm1IpSYtwIDAQAB";
+    npx:hasSignature "QHB3O/AGfyREJ6HfpN3wtXU55IJHv0hHD2Y7LsWxy/2hnou1ecujrZb7Xe/qz/Q/P1nV5MtdAt0HeTi2ngLBMecB8Q7Qcj0C4eJhMf9gtxNT1YlVVkjkJU9VWQYxQQHGLNfF6G7c7clKmhYcweVhDQKwaYIAx8yMtPq70j3PWIU=";
+    npx:hasSignatureTarget this:;
+    npx:signedBy orcid:0000-0002-1267-0234 .
+}
+

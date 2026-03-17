@@ -169,6 +169,20 @@ Assertion templates define the structure for creating nanopubs of a specific typ
 curl -s "https://query.knowledgepixels.com/api/RA6bgrU3Ezfg5VAiLru0BFYHaSj6vZU6jJTscxNl8Wqvc/get-assertion-templates"
 ```
 
+**Downloading all resource views locally:**
+
+Run the [resource view download script](scripts/download-resource-views.sh) to fetch all resource view nanopublications into the [resource-views/](resource-views/) folder:
+
+```bash
+bash skills/nanopub/scripts/download-resource-views.sh
+```
+
+Resource views define how data is displayed on resource pages (user/space/maintained resource pages). They specify a query, view type (tabular, list, nanopub set, etc.), and optional action templates. They can be listed via the API:
+
+```bash
+curl -s "https://query.knowledgepixels.com/api/RAcyg9La3L2Xuig-jEXicmdmEgUGYfHda6Au1Pfq64hR0/get-all-resource-views"
+```
+
 To browse the OpenAPI spec for a specific published query:
 
 ```
