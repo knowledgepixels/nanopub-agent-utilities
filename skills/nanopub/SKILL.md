@@ -346,7 +346,20 @@ If `npx:signedBy` is absent, the user's ORCID was not found in the profile. Stop
 
 If the nanopub contains a grlc query template (i.e. has a `grlc:sparql` predicate in its assertion), **always test it before publishing** using the unpublished query testing method described in the "Querying nanopubs via Nanopub Query" section above. Verify the results look correct before proceeding to publish.
 
-### 6. Ask about publishing target, then publish
+### 6. Publish an example nanopub for new types
+
+When creating a new assertion template that introduces a new nanopub type (e.g. `wd:Q604733` for presentations), the nanopub registries only set up a type-specific triple store once the first nanopub of that type is published (see the list at https://query.knowledgepixels.com/types). Until then, queries targeting that type will not work (the `full` repo could be used but doesn't scale).
+
+To bootstrap a new type, publish an **example nanopub** that follows the template:
+
+- Create a nanopub with realistic sample data following the template's structure
+- Mark it with `npx:hasNanopubType npx:ExampleNanopub` in pubinfo so it is excluded from real result listings
+- Prefix the `rdfs:label` with "Example: " and mention it's an example in the description
+- Include `nt:wasCreatedFromTemplate`, `nt:wasCreatedFromProvenanceTemplate`, and `nt:wasCreatedFromPubinfoTemplate` references in pubinfo to link it back to the templates it was created from
+
+This ensures the type-specific triple store is created and queries for that type start working immediately.
+
+### 7. Ask about publishing target, then publish
 
 Ask: **test server or live network?**
 
@@ -358,7 +371,7 @@ java -jar $JAR publish --server https://test.registry.knowledgepixels.com/ tmp/<
 java -jar $JAR publish tmp/<name>-signed.trig
 ```
 
-### 7. Retract a nanopub (if a bad version was published)
+### 8. Retract a nanopub (if a bad version was published)
 
 ```bash
 # Retract using the default user key:
@@ -370,7 +383,7 @@ java -jar $JAR retract -i <nanopub-uri> -k ~/.nanopub/<bot>_id_rsa -s <signer-IR
 
 The `-p` flag publishes the retraction immediately. When using a specific key (`-k`), you must also specify the signer IRI (`-s`), which can be an ORCID or a bot IRI.
 
-### 8. Create a nanopub index
+### 9. Create a nanopub index
 
 A nanopub index groups multiple nanopubs under a single entry point:
 
@@ -386,7 +399,7 @@ java -jar $JAR mkindex -x <old-index-uri> -o new-index.trig -t "Index title" fil
 
 The `-x` flag automatically adds the `npx:supersedes` link. After creating, sign and publish as usual.
 
-### 9. Report result
+### 10. Report result
 
 Show:
 - The new nanopub trusty URI
