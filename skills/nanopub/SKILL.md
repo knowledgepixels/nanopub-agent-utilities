@@ -202,6 +202,8 @@ Nanopub SPARQL templates use an extended version of the grlc syntax for placehol
 
 **API parameter naming:** The SPARQL variable name is stripped of its prefix and suffix to form the API parameter name. For example, `?_user_iri` becomes just `user` in the API, not `_user_iri`.
 
+**Date/time parameters:** Literal placeholders (e.g. `?_startDate`) are substituted as untyped string literals by grlc. When comparing against `xsd:dateTime` values (e.g. `dct:created`), always cast using `xsd:dateTime(?_startDate)` in the filter — otherwise the typed/untyped mismatch silently produces no results. The parameter value passed by the user must also be a full ISO 8601 datetime string (e.g. `2026-03-01T00:00:00Z`); bare date strings like `2026-03-01` will cause the cast to fail.
+
 **Result column labels:** When a result column holds a URI, the UI renders it nicely if there is a companion `?<name>_label` variable. For example, a `?view` column with a `?view_label` variable will display the label text linked to the URI. For nanopub URI columns, use `("^" as ?np_label)` to show a short clickable symbol instead of the full URI. Always place `?np` and `?np_label` as the last columns in the SELECT clause.
 
 **Calling a query via the API:**
