@@ -236,6 +236,15 @@ ARTIFACT=$(head -1 tmp/<name>-signed.trig | grep -oP 'RA[A-Za-z0-9_-]{43}')
 xdg-open "https://query.knowledgepixels.com/openapi/?url=spec/${ARTIFACT}/<query-local-name>&_nanopub_trig=${NP_B64}"
 ```
 
+**Previewing any signed nanopub in Nanodash:**
+
+You can preview any signed (but unpublished) nanopub in Nanodash by base64url-encoding the signed TriG and passing it as the `_nanopub_trig` parameter:
+
+```bash
+NP_B64=$(base64 -w0 tmp/<name>-signed.trig | tr '+/' '-_' | tr -d '=')
+xdg-open "https://nanodash.knowledgepixels.com/view?_nanopub_trig=${NP_B64}"
+```
+
 ### 2. Check the user's profile
 
 Before creating the TriG file, read `~/.nanopub/profile.yaml` to get the user's ORCID:
