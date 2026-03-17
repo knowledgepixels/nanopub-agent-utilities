@@ -400,7 +400,7 @@ Show:
 - Nanopubs use **trusty URIs** — the `sign` command computes and replaces the placeholder URI everywhere in the file.
 - The temp URI must end with `/` so sub-resources are correctly derived and transformed.
 - Never copy the original nanopub's author ORCID into `dct:creator`/`prov:wasAttributedTo` — always use the current user's ORCID from their profile.
-- Always get the current UTC time by running `date -u +"%Y-%m-%dT%H:%M:%SZ"` for `dct:created` timestamps. Never use a date-only or zeroed time.
+- Always get the current UTC time by running `date -u +"%Y-%m-%dT%H:%M:%SZ"` for `dct:created` timestamps. Never use a date-only or zeroed time. When updating a nanopub before publishing (e.g. after revisions), always refresh the timestamp to the current time.
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
 - Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
 - Add `npx:introduces` in pubinfo pointing to the main element of the assertion when the nanopub introduces a new concept or resource (e.g. a new shape, class, or query definition).
