@@ -177,7 +177,7 @@ Run the [resource view download script](scripts/download-resource-views.sh) to f
 bash skills/nanopub/scripts/download-resource-views.sh
 ```
 
-Resource views define how data is displayed on resource pages (user/space/maintained resource pages). They specify a query, view type (tabular, list, nanopub set, etc.), and optional action templates. They can be listed via the API:
+Resource views define how data is displayed on resource pages (user/space/maintained resource pages). They specify a query, view type (tabular, list, nanopub set, etc.), and optional action templates. When creating a new resource view, prefix its `dct:title` with a thematically matching emoji (e.g. "📢 My posts", "📚 My Papers", "🎤 Presentations"). They can be listed via the API:
 
 ```bash
 curl -s "https://query.knowledgepixels.com/api/RAcyg9La3L2Xuig-jEXicmdmEgUGYfHda6Au1Pfq64hR0/get-all-resource-views"

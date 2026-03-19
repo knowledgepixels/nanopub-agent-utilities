@@ -1,5 +1,5 @@
-@prefix this: <https://w3id.org/np/RAA7b0o3_VfL_vCBV0q2kbKxa79uSMano5FUJFEv1zyNg> .
-@prefix sub: <https://w3id.org/np/RAA7b0o3_VfL_vCBV0q2kbKxa79uSMano5FUJFEv1zyNg/> .
+@prefix this: <https://w3id.org/np/RA2SmCxIFSF_NdiVH8LHKfRfAw2NPjxP0Xvso-j_6Uzto> .
+@prefix sub: <https://w3id.org/np/RA2SmCxIFSF_NdiVH8LHKfRfAw2NPjxP0Xvso-j_6Uzto/> .
 @prefix np: <http://www.nanopub.org/nschema#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix nt: <https://w3id.org/np/o/ntemplate/> .
@@ -19,8 +19,8 @@ sub:Head {
 
 sub:assertion {
   sub:papers-for-author-view a <https://w3id.org/kpxl/gen/terms/ResourceView>, <https://w3id.org/kpxl/gen/terms/TabularView>;
-    dct:isVersionOf sub:papers-for-author-view-kind;
-    dct:title "My Papers";
+    dct:isVersionOf <https://w3id.org/np/RAA7b0o3_VfL_vCBV0q2kbKxa79uSMano5FUJFEv1zyNg/papers-for-author-view-kind>;
+    dct:title "📚 My Papers";
     rdfs:label "Papers for given author";
     <https://w3id.org/kpxl/gen/terms/hasStructuralPosition> "4.4.1.papers";
     <https://w3id.org/kpxl/gen/terms/hasViewQuery> <https://w3id.org/np/RA7X8hbsozQjZCv4RfWGIgzEA6qr9Ds6RL5kQnB7GHThc/get-papers-for-author>;
@@ -34,24 +34,25 @@ sub:provenance {
 sub:pubinfo {
   orcid:0000-0002-1267-0234 foaf:name "Tobias Kuhn" .
   
-  <https://w3id.org/np/RA7X8hbsozQjZCv4RfWGIgzEA6qr9Ds6RL5kQnB7GHThc/get-papers-for-author>
-    nt:hasLabelFromApi "Get papers for author - This query returns the papers for a given author." .
-  
-  this: dct:created "2026-02-06T10:45:13.662Z"^^xsd:dateTime;
+  this: dct:created "2026-03-19T07:41:36.613Z"^^xsd:dateTime;
     dct:creator orcid:0000-0002-1267-0234;
     dct:license <https://creativecommons.org/licenses/by/4.0/>;
     npx:embeds sub:papers-for-author-view;
-    npx:introduces sub:papers-for-author-view-kind;
+    npx:introduces <https://w3id.org/np/RAA7b0o3_VfL_vCBV0q2kbKxa79uSMano5FUJFEv1zyNg/papers-for-author-view-kind>;
+    npx:supersedes <https://w3id.org/np/RAA7b0o3_VfL_vCBV0q2kbKxa79uSMano5FUJFEv1zyNg>;
     npx:wasCreatedAt <https://nanodash.knowledgepixels.com/>;
     nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
-    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RA0J4vUn_dekg-U1kK3AOEt02p9mT2WO03uGxLDec1jLw>,
-      <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
+    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RACJ58Gvyn91LqCKIO9zu1eijDQIeEff28iyDrJgjSJF8>,
+      <https://w3id.org/np/RAoTD7udB2KtUuOuAe74tJi1t3VzK0DyWS7rYVAq1GRvw>, <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
     nt:wasCreatedFromTemplate <https://w3id.org/np/RARLsTlqbTesu1b0WJZ-zL1z96xumOiqbK3l_vV6iZoww> .
   
   sub:sig npx:hasAlgorithm "RSA";
     npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4Wj537OijfOWVtsHMznuXKISqBhtGDQZfdO6pbb4hg9EHMcUFGTLbWaPrP783PHv8HMAAPjvEkHLaOHMIknqhaIa5236lfBO3r+ljVdYBElBcLvROmwG+ZGtmPNZf7lMhI15xf5TfoaSa84AFRd5J2EXekK6PhaFQhRm1IpSYtwIDAQAB";
-    npx:hasSignature "PVn9C75tlpwFt0JaLE2a90iz+3Xmzq3dbhKnCRDFQTEjVoGZh6uabrmzBIyuKHz+yYtNhfGDiJK56Nh4G/oeIhjH2P8BPlnZmArWsxtGP1771v9F4FJ3Tb6WpNmuwObYiMfJkxSEGrSNAq2t8/QeF1eMfwsmMqgYPmQe6JtLRe4=";
+    npx:hasSignature "87eWomi6e3ek4VRzxfq6XKnWF/uD9Ry48cB2zsVWMrdaYHEH9JN8mEJD8jkAAFVo8VqJZ6HFQ1YsyFTB3G/1pqV6MWwTex/YIwm/JpkPVGITW79xtrcdsVN/wKIhOb+9sPEp1qeEvw+bXAfWVxDYDs/1jbVXTpdIMcDh8sS6Ee0=";
     npx:hasSignatureTarget this:;
     npx:signedBy orcid:0000-0002-1267-0234 .
+  
+  <https://w3id.org/np/RA7X8hbsozQjZCv4RfWGIgzEA6qr9Ds6RL5kQnB7GHThc/get-papers-for-author>
+    nt:hasLabelFromApi "Get papers for author - This query returns the papers for a given author." .
 }
 

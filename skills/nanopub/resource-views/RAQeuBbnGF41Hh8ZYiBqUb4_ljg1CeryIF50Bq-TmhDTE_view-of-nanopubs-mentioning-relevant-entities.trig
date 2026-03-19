@@ -1,5 +1,5 @@
-@prefix this: <https://w3id.org/np/RAK92_neVzdISbVaE6REZh-HYMP7VovOzimM5oEQSZTpw> .
-@prefix sub: <https://w3id.org/np/RAK92_neVzdISbVaE6REZh-HYMP7VovOzimM5oEQSZTpw/> .
+@prefix this: <https://w3id.org/np/RAQeuBbnGF41Hh8ZYiBqUb4_ljg1CeryIF50Bq-TmhDTE> .
+@prefix sub: <https://w3id.org/np/RAQeuBbnGF41Hh8ZYiBqUb4_ljg1CeryIF50Bq-TmhDTE/> .
 @prefix np: <http://www.nanopub.org/nschema#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix nt: <https://w3id.org/np/o/ntemplate/> .
@@ -18,14 +18,14 @@ sub:Head {
 }
 
 sub:assertion {
-  sub:latest-nanopubs-by-user-view a <https://w3id.org/kpxl/gen/terms/NanopubSetView>,
-      <https://w3id.org/kpxl/gen/terms/ResourceView>;
-    dct:isVersionOf sub:latest-nanopubs-by-user-view-kind;
-    dct:title "My latest nanopublications";
-    rdfs:label "Latest nanopubs by user view";
-    <https://w3id.org/kpxl/gen/terms/hasStructuralPosition> "5.5.latestUserNps";
-    <https://w3id.org/kpxl/gen/terms/hasViewQuery> <https://w3id.org/np/RA3MHN9nl1Erz9W-1HpyNp2CSJBQ2uS5vlSDLARla45w4/get-latest-nanopubs-by-user>;
-    <https://w3id.org/kpxl/gen/terms/hasViewQueryTargetField> "user" .
+  sub:nanopubs-mentioning-relevant-entities a <https://w3id.org/kpxl/gen/terms/ResourceView>,
+      <https://w3id.org/kpxl/gen/terms/TabularView>;
+    dct:isVersionOf sub:nanopubs-mentioning-relevant-entities-kind;
+    dct:title "Nanopublications mentioning relevant entities";
+    rdfs:label "View of nanopubs mentioning relevant entities";
+    <https://w3id.org/kpxl/gen/terms/hasStructuralPosition> "4.6.relevantNanopubs";
+    <https://w3id.org/kpxl/gen/terms/hasViewQuery> <https://w3id.org/np/RAD1cRJlEl2sBxkgnJaEcjlk66PtjBwLBAM1gn2nWIAzM/get-nanopubs-mentioning-relevant-entities>;
+    <https://w3id.org/kpxl/gen/terms/hasViewQueryTargetField> "entity" .
 }
 
 sub:provenance {
@@ -35,14 +35,14 @@ sub:provenance {
 sub:pubinfo {
   orcid:0000-0002-1267-0234 foaf:name "Tobias Kuhn" .
   
-  <https://w3id.org/np/RA3MHN9nl1Erz9W-1HpyNp2CSJBQ2uS5vlSDLARla45w4/get-latest-nanopubs-by-user>
-    nt:hasLabelFromApi "Get latest nanopubs by user - This query returns the latest nanopublications by user ID." .
+  <https://w3id.org/np/RAD1cRJlEl2sBxkgnJaEcjlk66PtjBwLBAM1gn2nWIAzM/get-nanopubs-mentioning-relevant-entities>
+    nt:hasLabelFromApi "Get nanopubs mentioning relevant entities - Get nanopubs mentioning relevant entities" .
   
-  this: dct:created "2026-03-13T14:40:08.096Z"^^xsd:dateTime;
+  this: dct:created "2026-03-17T16:16:27.954Z"^^xsd:dateTime;
     dct:creator orcid:0000-0002-1267-0234;
     dct:license <https://creativecommons.org/publicdomain/zero/1.0/>;
-    npx:embeds sub:latest-nanopubs-by-user-view;
-    npx:introduces sub:latest-nanopubs-by-user-view-kind;
+    npx:embeds sub:nanopubs-mentioning-relevant-entities;
+    npx:introduces sub:nanopubs-mentioning-relevant-entities-kind;
     npx:wasCreatedAt <https://nanodash.knowledgepixels.com/>;
     nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
     nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RACJ58Gvyn91LqCKIO9zu1eijDQIeEff28iyDrJgjSJF8>,
@@ -51,7 +51,7 @@ sub:pubinfo {
   
   sub:sig npx:hasAlgorithm "RSA";
     npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4Wj537OijfOWVtsHMznuXKISqBhtGDQZfdO6pbb4hg9EHMcUFGTLbWaPrP783PHv8HMAAPjvEkHLaOHMIknqhaIa5236lfBO3r+ljVdYBElBcLvROmwG+ZGtmPNZf7lMhI15xf5TfoaSa84AFRd5J2EXekK6PhaFQhRm1IpSYtwIDAQAB";
-    npx:hasSignature "GlEb6VZ7BSz1YhWE1v9ksJ/+dhFsJfmeIhqOHv+fBee9VtSPxbrCR5g/TxWXtWfTnO0M3jA6tV9sMCKDQgVEMkgsQ8tFSZseI6MqPgcTQafImfsbSrw85Qk6GAA8mDpWxf2X9km0hGqXQ3O4qL9YsaUWYIGllsBKiBzqNTL08As=";
+    npx:hasSignature "TPO6sohJ68BcQqaUXzr/nta2RwhONPJAk+AV9ABZQTkRjo9aDzRFfmYyEGppvcHNCkesu6ouOlLj7A/O2+ui/dd7hgp2RceWHB1ydmJMJ8XI0XXiiq5m7a851Lxv9TNAzEyAY6m16Y8e7x/5apVIzRSVzFCTTCjuOP4nDkgQwLU=";
     npx:hasSignatureTarget this:;
     npx:signedBy orcid:0000-0002-1267-0234 .
 }

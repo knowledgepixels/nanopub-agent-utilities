@@ -1,5 +1,5 @@
-@prefix this: <https://w3id.org/np/RA-pCj8vcRrS35ZFM9lavehi4oWfgnxLYrL0iWvo5cuQA> .
-@prefix sub: <https://w3id.org/np/RA-pCj8vcRrS35ZFM9lavehi4oWfgnxLYrL0iWvo5cuQA/> .
+@prefix this: <https://w3id.org/np/RA_lPbnNMBAczwoMzn6veSorJytBERUus-uIUj70r_rbw> .
+@prefix sub: <https://w3id.org/np/RA_lPbnNMBAczwoMzn6veSorJytBERUus-uIUj70r_rbw/> .
 @prefix np: <http://www.nanopub.org/nschema#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix nt: <https://w3id.org/np/o/ntemplate/> .
@@ -27,7 +27,7 @@ sub:assertion {
   
   sub:personal-url-view a <https://w3id.org/kpxl/gen/terms/ListView>, <https://w3id.org/kpxl/gen/terms/ResourceView>;
     dct:isVersionOf <https://w3id.org/np/RAk01V9mhhMp4JnFY6AKHgOwE_0ZMvymOEdYgHrqejRe4/personal-url-view-kind>;
-    dct:title "My personal URLs";
+    dct:title "👤 My personal URLs";
     rdfs:label "View of personal URLs for user";
     <https://w3id.org/kpxl/gen/terms/hasStructuralPosition> "2.5.personalUrl";
     <https://w3id.org/kpxl/gen/terms/hasViewAction> sub:addAction;
@@ -42,12 +42,18 @@ sub:provenance {
 sub:pubinfo {
   orcid:0000-0002-1267-0234 foaf:name "Tobias Kuhn" .
   
-  this: dct:created "2026-03-13T14:18:16.367Z"^^xsd:dateTime;
+  <https://w3id.org/np/RA8m-VNh7OEg5MVSkoQlQtgVmEFfmpaqtV0ZLKsRhi-YU> nt:hasLabelFromApi
+      "Declare personal URLs" .
+  
+  <https://w3id.org/np/RAPvMM-bFbR9FDa0GMykeUSxWjpRdVZ8bwwDw35EwNII4/get-personal-urls>
+    nt:hasLabelFromApi "Get personal URLs - This query returns the personal URLs for a given user." .
+  
+  this: dct:created "2026-03-19T07:48:30.941Z"^^xsd:dateTime;
     dct:creator orcid:0000-0002-1267-0234;
     dct:license <https://creativecommons.org/publicdomain/zero/1.0/>;
     npx:embeds sub:personal-url-view;
     npx:introduces <https://w3id.org/np/RAk01V9mhhMp4JnFY6AKHgOwE_0ZMvymOEdYgHrqejRe4/personal-url-view-kind>;
-    npx:supersedes <https://w3id.org/np/RAk01V9mhhMp4JnFY6AKHgOwE_0ZMvymOEdYgHrqejRe4>;
+    npx:supersedes <https://w3id.org/np/RA-pCj8vcRrS35ZFM9lavehi4oWfgnxLYrL0iWvo5cuQA>;
     npx:wasCreatedAt <https://nanodash.knowledgepixels.com/>;
     nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
     nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RACJ58Gvyn91LqCKIO9zu1eijDQIeEff28iyDrJgjSJF8>,
@@ -56,14 +62,8 @@ sub:pubinfo {
   
   sub:sig npx:hasAlgorithm "RSA";
     npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD4Wj537OijfOWVtsHMznuXKISqBhtGDQZfdO6pbb4hg9EHMcUFGTLbWaPrP783PHv8HMAAPjvEkHLaOHMIknqhaIa5236lfBO3r+ljVdYBElBcLvROmwG+ZGtmPNZf7lMhI15xf5TfoaSa84AFRd5J2EXekK6PhaFQhRm1IpSYtwIDAQAB";
-    npx:hasSignature "cObp9UL+I+RYhnO/cffmYoYOonom9bOtREGTXDiqUQyxQgP9Vcy5k38H46vc+CLEg8g9JCJF5Gu+AE5NQpwKOkjiGMIyWfNlYdx1B8d0MD7GfsIcwENBl7NtT8FpB04qCbL0IxeJsJVi86ge23csj5US5Bj+cGbrO2rbUWjvB64=";
+    npx:hasSignature "6POJrG7POjBA0f+xOiJ7AXhF6+RY2JeBxve7PKDiJ8Jt8Vr7DKtIDG4pKQOq1S+DmBkH3HJXqhNRlW890NpdeLmucX1eJY0AqD629xy9mE/+6ERVZYF+99aaAx7arnu44lQFrGAjeDmbRQTLBfS4xzddn3Xd5xWg/wDqmqotxg4=";
     npx:hasSignatureTarget this:;
     npx:signedBy orcid:0000-0002-1267-0234 .
-  
-  <https://w3id.org/np/RA8m-VNh7OEg5MVSkoQlQtgVmEFfmpaqtV0ZLKsRhi-YU> nt:hasLabelFromApi
-      "Declare personal URLs" .
-  
-  <https://w3id.org/np/RAPvMM-bFbR9FDa0GMykeUSxWjpRdVZ8bwwDw35EwNII4/get-personal-urls>
-    nt:hasLabelFromApi "Get personal URLs - This query returns the personal URLs for a given user." .
 }
 
