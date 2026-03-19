@@ -428,7 +428,7 @@ Show:
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
 - Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
 - Add `npx:introduces` in pubinfo pointing to the main element of the assertion when the nanopub introduces a new concept or resource (e.g. a new shape, class, or query definition).
-- Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph.
+- Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph. Do not prefix labels with "Template: " or similar prefixes — just use the plain name.
 - Only add `npx:wasCreatedAt` if the nanopub was actually created at that specific tool instance. Do not add it by default.
 - The temp URI **must** use the `http://purl.org/nanopub/temp/` prefix (e.g. `http://purl.org/nanopub/temp/np001/`). Using `https://w3id.org/np/temp` instead causes the signed trusty URI to be malformed.
 - **Personal information policy**: Only include personal information (names, emails, affiliations, ORCIDs) in a nanopub if it is already permanently and openly published (e.g. in a published paper or made available by the person under an open license).
