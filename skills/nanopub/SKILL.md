@@ -206,6 +206,15 @@ Nanopub SPARQL templates use an extended version of the grlc syntax for placehol
 
 **Result column labels:** When a result column holds a URI, the UI renders it nicely if there is a companion `?<name>_label` variable. For example, a `?view` column with a `?view_label` variable will display the label text linked to the URI. For nanopub URI columns, use `("^" as ?np_label)` to show a short clickable symbol instead of the full URI. Always place `?np` and `?np_label` as the last two columns in the SELECT clause, in that order (`?np` before `?np_label`).
 
+**Multi-value result columns:** Result columns (not placeholders) can use the `_multi` and `_multi_iri` suffixes to hold concatenated values produced by `group_concat`. Use `_multi_iri` when the concatenated values are URIs (space-separated) and `_multi` for literals (newline-separated). Build these in the SELECT clause with `group_concat`:
+
+- **IRI lists** (space-separated): `(group_concat(str(?item); separator=" ") as ?items_multi_iri)`
+- **Literal lists** (newline-separated, with escaping): `(group_concat(replace(replace(?text, "\\\\", "\\\\\\\\"), "\\n", "\\\\n"); separator="\\n") as ?texts_multi)` — this escapes backslashes and newlines in individual values so they can be safely split on newlines later.
+
+The escaping pattern `replace(replace(?val, "\\\\", "\\\\\\\\"), "\\n", "\\\\n")` should always be applied when concatenating literals with a newline separator: first escape existing backslashes (`\` → `\\`), then escape existing newlines (newline → `\n`).
+
+The `_label` naming convention also applies to multi-value columns. For a `?things_multi_iri` column holding concatenated URIs, use `?things_label_multi` as its label companion holding the corresponding concatenated literal labels. For example: `?authors_multi_iri` (space-separated ORCIDs) paired with `?authors_label_multi` (newline-separated names with escaping).
+
 **Calling a query via the API:**
 
 ```bash
