@@ -177,7 +177,7 @@ Run the [resource view download script](scripts/download-resource-views.sh) to f
 bash skills/nanopub/scripts/download-resource-views.sh
 ```
 
-Resource views define how data is displayed on resource pages (user/space/maintained resource pages). They specify a query, view type (tabular, list, nanopub set, etc.), and optional action templates. When creating a new resource view, prefix its `dct:title` with a thematically matching emoji (e.g. "📢 My posts", "📚 My Papers", "🎤 Presentations"). They can be listed via the API:
+Resource views define how data is displayed on resource pages (user/space/maintained resource pages). They specify a query, view type (tabular, list, nanopub set, etc.), and optional action templates. When creating a new resource view, prefix its `dct:title` with a thematically matching emoji (e.g. "📢 My posts", "📚 My Papers", "🎤 Presentations"). Every resource view **must** include `gen:appliesToInstancesOf` with one or more of `gen:IndividualAgent`, `gen:Space`, or `gen:MaintainedResource` to specify which types of resource pages the view should appear on. If no specific type applies, use `gen:MaintainedResource` (and possibly `gen:Space`). They can be listed via the API:
 
 ```bash
 curl -s "https://query.knowledgepixels.com/api/RAcyg9La3L2Xuig-jEXicmdmEgUGYfHda6Au1Pfq64hR0/get-all-resource-views"
@@ -370,9 +370,9 @@ To bootstrap a new type, publish an **example nanopub** that follows the templat
 
 This ensures the type-specific triple store is created and queries for that type start working immediately.
 
-### 7. Ask about publishing target, then publish
+### 7. Wait for explicit publishing instruction
 
-Ask: **test server or live network?**
+Do **not** publish automatically. After signing and testing, stop and wait for the user to explicitly ask you to publish. When they do, ask: **test server or live network?**
 
 ```bash
 # Test server
@@ -419,6 +419,7 @@ Show:
 
 ## Important Notes
 
+- **Never publish unless explicitly instructed to do so.** After signing and testing, always wait for the user to explicitly ask you to publish. Do not publish automatically as part of the workflow.
 - **Never write a Java class** for one-off nanopub creation. Always create the TriG file directly and use the CLI jar.
 - Download the CLI jar from Maven Central if not present (see step 4); reuse it across invocations by keeping it in the working directory.
 - Nanopubs use **trusty URIs** — the `sign` command computes and replaces the placeholder URI everywhere in the file.
