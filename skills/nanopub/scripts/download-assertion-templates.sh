@@ -19,6 +19,11 @@ QUERY_LIST=$(curl -s "https://query.knowledgepixels.com/api/RA6bgrU3Ezfg5VAiLru0
 TOTAL=$(echo "$QUERY_LIST" | tail -n +2 | wc -l)
 echo "Found $TOTAL assertion templates."
 
+# Collect current trusty IDs for cleanup later
+CURRENT_IDS=$(echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r np _rest; do
+  echo "$np" | sed 's|.*/||'
+done)
+
 COUNT=0
 echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r np _pubkey _pubkeyhash _date label _rest; do
   # Extract the trusty ID from the nanopub URI
@@ -42,5 +47,20 @@ echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r np _pubkey _pubkeyhash _da
   echo "[$COUNT/$TOTAL] Downloading: ${label:-$TRUSTY_ID}"
   curl -s -L -H "Accept: application/trig" "$np" -o "$OUTFILE"
 done
+
+# Remove local files whose trusty ID is no longer in the API response
+REMOVED=0
+for f in "$OUTPUT_DIR"/*.trig; do
+  [ -f "$f" ] || continue
+  # Extract trusty ID (first 45 chars: "RA" + 43 base64url chars)
+  BASENAME=$(basename "$f" .trig)
+  FILE_ID="${BASENAME:0:45}"
+  if ! echo "$CURRENT_IDS" | grep -qxF "$FILE_ID"; then
+    echo "Removing stale: $(basename "$f")"
+    rm "$f"
+    REMOVED=$((REMOVED + 1))
+  fi
+done
+[ "$REMOVED" -gt 0 ] && echo "Removed $REMOVED stale file(s)."
 
 echo "Done. Assertion templates stored in: $OUTPUT_DIR"

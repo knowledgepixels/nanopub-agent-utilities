@@ -1,5 +1,5 @@
-@prefix this: <https://w3id.org/np/RAwPPxDxkXwgWwYhmvzi6SUs8djPZS4IgWJdp2G0blqoQ> .
-@prefix sub: <https://w3id.org/np/RAwPPxDxkXwgWwYhmvzi6SUs8djPZS4IgWJdp2G0blqoQ/> .
+@prefix this: <https://w3id.org/np/RA__5ljAMGwS8k5UOUpJpuE04s6m46OdmLl9zxz6c3riA> .
+@prefix sub: <https://w3id.org/np/RA__5ljAMGwS8k5UOUpJpuE04s6m46OdmLl9zxz6c3riA/> .
 @prefix np: <http://www.nanopub.org/nschema#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -27,29 +27,31 @@ sub:assertion {
   
   <https://w3id.org/kpxl/gen/terms/ViewDisplay> rdfs:label "view display" .
   
-  <https://w3id.org/kpxl/gen/terms/appliesTo> rdfs:label "applies to - applies only to this space, and not to parts of it, etc." .
-  
-  <https://w3id.org/kpxl/gen/terms/appliesToInstancesOf> rdfs:label "applies to all instances of" .
-  
-  <https://w3id.org/kpxl/gen/terms/appliesToNamespace> rdfs:label "applies to the namespace" .
+  <https://w3id.org/kpxl/gen/terms/appliesTo> rdfs:label "applies to - only applies to this user, and not to pages that are part of it, etc." .
   
   <https://w3id.org/kpxl/gen/terms/isDisplayFor> rdfs:label "is a display for" .
   
   <https://w3id.org/kpxl/gen/terms/isDisplayOfView> rdfs:label "is a display of the view" .
   
-  sub:appliesToClass a nt:ExternalUriPlaceholder;
-    rdfs:label "class URI, overriding view definition" .
+  <https://w3id.org/np/RA22TaPlQS33tbB208xUzWE7uDNcPCsmFjMY8VliGG5Z0/latest-nanopubs-by-user-view>
+    rdfs:label "show my latest nanopublications" .
   
-  sub:appliesToNamespace a nt:ExternalUriPlaceholder;
-    rdfs:label "namespace (URI prefix)" .
+  <https://w3id.org/np/RA4SeeCiFsP7g7hC2OFp5NaH6TABROyxCA0o5IEi00VTk/simple-message-view>
+    rdfs:label "simple message view" .
   
-  sub:appliesToResource a nt:GuidedChoicePlaceholder;
-    rdfs:label "choose resource" .
+  <https://w3id.org/np/RADxawsPMMxY1pa9gjFekT6Wlb1Wpa6GZkUNQA2E5vTa0/space-list-view>
+    rdfs:label "show user's Spaces" .
+  
+  <https://w3id.org/np/RAJR0wUBtvMatUJ1mWNBNKgpEvPTi8bKYz80LgQMDPWAE/planned-event-attendance-view>
+    rdfs:label "list events I plan to attend" .
+  
+  <https://w3id.org/np/RAM0SKWk9RBR7RzSG4s10rANuy4t-6a1vWmNXpGlRLF9E/read-papers-view>
+    rdfs:label "list papers I have read" .
   
   sub:assertion a nt:AssertionTemplate;
-    rdfs:label "Displaying a view for a Space";
+    rdfs:label "Displaying a view on a user page";
     nt:hasNanopubLabelPattern "${resource} displays view: ${view}";
-    nt:hasStatement sub:st10, sub:st12, sub:st20, sub:st30, sub:st31, sub:st32, sub:st33;
+    nt:hasStatement sub:st10, sub:st12, sub:st20, sub:st30, sub:st31;
     nt:hasTag "Spaces" .
   
   sub:display a nt:EmbeddedResource, nt:LocalResource;
@@ -60,9 +62,8 @@ sub:assertion {
     nt:hasDefaultValue <https://w3id.org/kpxl/gen/terms/ActivatedViewDisplay>;
     nt:possibleValue <https://w3id.org/kpxl/gen/terms/ActivatedViewDisplay>, <https://w3id.org/kpxl/gen/terms/DeactivatedViewDisplay> .
   
-  sub:resource a nt:GuidedChoicePlaceholder;
-    rdfs:label "choose the space";
-    nt:possibleValuesFromApi "https://w3id.org/np/l/nanopub-query-1.1/api/RAyMrQ89RECTi9gZK5q7gjL1wKTiP8StkLy0NIkkCiyew/find-things?type=https://w3id.org/kpxl/gen/terms/Space" .
+  sub:resource a nt:AgentPlaceholder;
+    rdfs:label "choose the user" .
   
   sub:st10 rdf:object <https://w3id.org/kpxl/gen/terms/ViewDisplay>;
     rdf:predicate rdf:type;
@@ -82,27 +83,18 @@ sub:assertion {
     rdf:subject sub:display .
   
   sub:st31 a nt:AdvancedStatement, nt:OptionalStatement;
-    rdf:object sub:appliesToResource;
+    rdf:object sub:resource;
     rdf:predicate <https://w3id.org/kpxl/gen/terms/appliesTo>;
-    rdf:subject sub:display .
-  
-  sub:st32 a nt:AdvancedStatement, nt:OptionalStatement, nt:RepeatableStatement;
-    rdf:object sub:appliesToClass;
-    rdf:predicate <https://w3id.org/kpxl/gen/terms/appliesToInstancesOf>;
-    rdf:subject sub:display .
-  
-  sub:st33 a nt:AdvancedStatement, nt:OptionalStatement, nt:RepeatableStatement;
-    rdf:object sub:appliesToNamespace;
-    rdf:predicate <https://w3id.org/kpxl/gen/terms/appliesToNamespace>;
     rdf:subject sub:display .
   
   sub:view a nt:GuidedChoicePlaceholder;
     rdfs:label "choose the view";
-    nt:possibleValue <https://w3id.org/np/RAyGnSBDLneVXhzK8SRwtkU4tN96F_3vSeZVc_SxYMxTk/simple-message-view>;
-    nt:possibleValuesFromApi "https://w3id.org/np/l/nanopub-query-1.1/api/RAs7Q2IMbb7C2WzFa98bVwlDMhN3kJ0rrF9cSEybtvLaA/find-embedded-things?type=https://w3id.org/kpxl/gen/terms/ResourceView" .
-  
-  <https://w3id.org/np/RAyGnSBDLneVXhzK8SRwtkU4tN96F_3vSeZVc_SxYMxTk/simple-message-view>
-    rdfs:label "simple message view" .
+    nt:possibleValue <https://w3id.org/np/RA22TaPlQS33tbB208xUzWE7uDNcPCsmFjMY8VliGG5Z0/latest-nanopubs-by-user-view>,
+      <https://w3id.org/np/RA4SeeCiFsP7g7hC2OFp5NaH6TABROyxCA0o5IEi00VTk/simple-message-view>,
+      <https://w3id.org/np/RADxawsPMMxY1pa9gjFekT6Wlb1Wpa6GZkUNQA2E5vTa0/space-list-view>,
+      <https://w3id.org/np/RAJR0wUBtvMatUJ1mWNBNKgpEvPTi8bKYz80LgQMDPWAE/planned-event-attendance-view>,
+      <https://w3id.org/np/RAM0SKWk9RBR7RzSG4s10rANuy4t-6a1vWmNXpGlRLF9E/read-papers-view>;
+    nt:possibleValuesFromApi "https://w3id.org/np/l/nanopub-query-1.1/api/RAzSFlOt0yD9b-GSNifkGoKfakXEYQ7f6Ic3OMwuJfwts/find-views?appliedViewClass=https://w3id.org/kpxl/gen/terms/IndividualAgent" .
 }
 
 sub:provenance {
@@ -112,20 +104,22 @@ sub:provenance {
 sub:pubinfo {
   orcid:0000-0002-1267-0234 foaf:name "Tobias Kuhn" .
   
-  this: dct:created "2026-02-13T07:57:56.479+01:00"^^xsd:dateTime;
+  this: dct:created "2026-03-20T14:02:17.627+01:00"^^xsd:dateTime;
     dct:creator orcid:0000-0002-1267-0234;
     dct:license <https://creativecommons.org/licenses/by/4.0/>;
-    npx:supersedes <https://w3id.org/np/RA37_10HmcQFAX1W07vvthrLssu3RHJtpIZvaj_u9Gzfc>;
+    npx:supersedes <https://w3id.org/np/RAaVmVxKwLJ_G6ORgdM5tKb24Ueg9ra2h-_jtwp3u-MoY>;
     npx:wasCreatedAt <http://localhost:37373/>;
-    rdfs:label "Displaying a view for a Space";
+    rdfs:label "Displaying a view on a user page";
+    prov:wasDerivedFrom <https://w3id.org/np/RA8a6AuDKWpWEbUcjwJCFclezi1eMjjn5QdmTLu9PX6OQ>;
     nt:wasCreatedFromProvenanceTemplate <https://w3id.org/np/RA7lSq6MuK_TIC6JMSHvLtee3lpLoZDOqLJCLXevnrPoU>;
-    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RA0J4vUn_dekg-U1kK3AOEt02p9mT2WO03uGxLDec1jLw>,
-      <https://w3id.org/np/RAoTD7udB2KtUuOuAe74tJi1t3VzK0DyWS7rYVAq1GRvw>, <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
+    nt:wasCreatedFromPubinfoTemplate <https://w3id.org/np/RACJ58Gvyn91LqCKIO9zu1eijDQIeEff28iyDrJgjSJF8>,
+      <https://w3id.org/np/RARW4MsFkHuwjycNElvEVtuMjpf4yWDL10-0C5l2MqqRQ>, <https://w3id.org/np/RAoTD7udB2KtUuOuAe74tJi1t3VzK0DyWS7rYVAq1GRvw>,
+      <https://w3id.org/np/RAukAcWHRDlkqxk7H2XNSegc1WnHI569INvNr-xdptDGI>;
     nt:wasCreatedFromTemplate <https://w3id.org/np/RASDwdz5WzsWdeDRREs0i5n5xTtKTrKS8pCIFUXhlkpt0> .
   
   sub:sig npx:hasAlgorithm "RSA";
     npx:hasPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCwUtewGCpT5vIfXYE1bmf/Uqu1ojqnWdYxv+ySO80ul8Gu7m8KoyPAwuvaPj0lvPtHrg000qMmkxzKhYknEjq8v7EerxZNYp5B3/3+5ZpuWOYAs78UnQVjbHSmDdmryr4D4VvvNIiUmd0yxci47dTFUj4DvfHnGd6hVe5+goqdcwIDAQAB";
-    npx:hasSignature "QKwbki82DB3EYC6GCGv0oi7vgNayl0uZ+dWRkbcjGrrQTUagAvOAdsH7vYDnBr4wRhTkDSferp0IDSCFRDQJQ8y/5ZFRHKKK6co46cr7DjGdGoCMUw63NpZy+xzFzG+9TGFal1l3cJghgNXGHLwUmF5QurntuSIS54aO5m0iyZ0=";
+    npx:hasSignature "EWu/z4IfdWe1Uz3FD5ayUe5PVlXXQ3EpwKHLTm1Nye+hlO2ut4R3S7/C4+vCJRZU7ycLmGBGN801BGgelBD1qn62yWcyFUy/uXuW6O14MftYUGrGG9mmsgGvnuRh5opOAHXvC8cqtnAFWoINsjo9xASsWOc6COtkwtLEzDLcS64=";
     npx:hasSignatureTarget this:;
     npx:signedBy orcid:0000-0002-1267-0234 .
 }

@@ -19,6 +19,11 @@ QUERY_LIST=$(curl -s "https://query.knowledgepixels.com/api/RAcyg9La3L2Xuig-jEXi
 TOTAL=$(echo "$QUERY_LIST" | tail -n +2 | wc -l)
 echo "Found $TOTAL resource views."
 
+# Collect current trusty IDs for cleanup later
+CURRENT_IDS=$(echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r _view _view_label _viewKind _type _query _template_count _first_template _first_template_label _date np _rest; do
+  echo "$np" | sed 's|.*/||'
+done)
+
 COUNT=0
 echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r _view view_label _viewKind _type _query _template_count _first_template _first_template_label _date np _rest; do
   # Extract the trusty ID from the nanopub URI
@@ -42,5 +47,20 @@ echo "$QUERY_LIST" | tail -n +2 | while IFS=, read -r _view view_label _viewKind
   echo "[$COUNT/$TOTAL] Downloading: ${view_label:-$TRUSTY_ID}"
   curl -s -L -H "Accept: application/trig" "$np" -o "$OUTFILE"
 done
+
+# Remove local files whose trusty ID is no longer in the API response
+REMOVED=0
+for f in "$OUTPUT_DIR"/*.trig; do
+  [ -f "$f" ] || continue
+  # Extract trusty ID (first 45 chars: "RA" + 43 base64url chars)
+  BASENAME=$(basename "$f" .trig)
+  FILE_ID="${BASENAME:0:45}"
+  if ! echo "$CURRENT_IDS" | grep -qxF "$FILE_ID"; then
+    echo "Removing stale: $(basename "$f")"
+    rm "$f"
+    REMOVED=$((REMOVED + 1))
+  fi
+done
+[ "$REMOVED" -gt 0 ] && echo "Removed $REMOVED stale file(s)."
 
 echo "Done. Resource views stored in: $OUTPUT_DIR"
