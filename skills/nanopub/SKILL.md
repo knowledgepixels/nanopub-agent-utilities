@@ -437,7 +437,25 @@ Show:
 - Always get the current UTC time by running `date -u +"%Y-%m-%dT%H:%M:%SZ"` for `dct:created` timestamps. Never use a date-only or zeroed time. When updating a nanopub before publishing (e.g. after revisions), always refresh the timestamp to the current time.
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
 - Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
-- Add `npx:introduces` in pubinfo pointing to the main element of the assertion when the nanopub introduces a new concept or resource (e.g. a new shape, class, or query definition).
+- **Introduced vs embedded resources**: Nanopubs can declare resources in pubinfo with `npx:introduces` and/or `npx:embeds`, which serve different purposes:
+  - **`npx:introduces`** declares a stable identity for a resource (e.g. a view kind, class, or query definition). When the nanopub is superseded, the introduced resource keeps its IRI — the new nanopub re-introduces the same resource. Use this for resources that others may reference by IRI.
+  - **`npx:embeds`** declares a concrete instance that is contained in this specific nanopub. Each time the nanopub is superseded, the embedded resource gets a new IRI (since it lives under the new nanopub's trusty URI). Use this for the version-specific content.
+  - Most nanopubs use only one: `npx:introduces` for templates, classes, and other referenceable definitions; `npx:embeds` for instances and content.
+  - **Resource views use both**: the embedded resource is the concrete view instance (with query, type, templates, etc.) and the introduced resource is the abstract view kind (a stable identifier). They are linked in the assertion with `dct:isVersionOf`:
+    ```turtle
+    sub:assertion {
+      sub:my-view a gen:ResourceView, gen:TabularView ;
+        dct:isVersionOf sub:my-view-kind ;
+        dct:title "📊 My View" ;
+        gen:hasViewQuery <query-np-uri> ;
+        gen:appliesToInstancesOf gen:IndividualAgent .
+      sub:my-view-kind a gen:ResourceView .
+    }
+    sub:pubinfo {
+      this: npx:embeds sub:my-view ;
+        npx:introduces sub:my-view-kind .
+    }
+    ```
 - Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph. Do not prefix labels with "Template: " or similar prefixes — just use the plain name.
 - Only add `npx:wasCreatedAt` if the nanopub was actually created at that specific tool instance. Do not add it by default.
 - The temp URI **must** use the `http://purl.org/nanopub/temp/` prefix (e.g. `http://purl.org/nanopub/temp/np001/`). Using `https://w3id.org/np/temp` instead causes the signed trusty URI to be malformed.
