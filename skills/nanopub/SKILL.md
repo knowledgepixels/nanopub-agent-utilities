@@ -438,22 +438,25 @@ Show:
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
 - Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
 - **Introduced vs embedded resources**: Nanopubs can declare resources in pubinfo with `npx:introduces` and/or `npx:embeds`, which serve different purposes:
-  - **`npx:introduces`** declares a stable identity for a resource (e.g. a view kind, class, or query definition). When the nanopub is superseded, the introduced resource keeps its IRI — the new nanopub re-introduces the same resource. Use this for resources that others may reference by IRI.
-  - **`npx:embeds`** declares a concrete instance that is contained in this specific nanopub. Each time the nanopub is superseded, the embedded resource gets a new IRI (since it lives under the new nanopub's trusty URI). Use this for the version-specific content.
+  - **`npx:introduces`** declares a stable identity for a resource (e.g. a view kind, class, or query definition). When the nanopub is superseded, the introduced resource **must keep the same IRI** from the original nanopub — use the full absolute URI (e.g. `<https://w3id.org/np/RAxxxxx/my-resource-kind>`) rather than `sub:my-resource-kind`, so the IRI does not change with each new trusty URI. The new nanopub re-introduces the same resource at the same stable IRI. Use this for resources that others may reference by IRI.
+  - **`npx:embeds`** declares a concrete instance that is contained in this specific nanopub. Each time the nanopub is superseded, the embedded resource naturally gets a new IRI (since it lives under the new nanopub's trusty URI via `sub:`). Use this for the version-specific content.
   - Most nanopubs use only one: `npx:introduces` for templates, classes, and other referenceable definitions; `npx:embeds` for instances and content.
-  - **Resource views use both**: the embedded resource is the concrete view instance (with query, type, templates, etc.) and the introduced resource is the abstract view kind (a stable identifier). They are linked in the assertion with `dct:isVersionOf`:
+  - **Resource views use both**: the embedded resource is the concrete view instance (with query, type, templates, etc.) and the introduced resource is the abstract view kind (a stable identifier). They are linked in the assertion with `dct:isVersionOf`. When superseding, the embedded resource (`sub:my-view`) naturally gets a new IRI, but the introduced resource must use the **original full URI** so it stays stable:
     ```turtle
     sub:assertion {
       sub:my-view a gen:ResourceView, gen:TabularView ;
-        dct:isVersionOf sub:my-view-kind ;
+        # For a new view, use sub:my-view-kind here.
+        # When superseding, use the full URI from the original nanopub:
+        dct:isVersionOf <https://w3id.org/np/RAoriginal.../my-view-kind> ;
         dct:title "📊 My View" ;
         gen:hasViewQuery <query-np-uri> ;
         gen:appliesToInstancesOf gen:IndividualAgent .
-      sub:my-view-kind a gen:ResourceView .
+      # Same here — sub:my-view-kind for new, full URI for superseding:
+      <https://w3id.org/np/RAoriginal.../my-view-kind> a gen:ResourceView .
     }
     sub:pubinfo {
       this: npx:embeds sub:my-view ;
-        npx:introduces sub:my-view-kind .
+        npx:introduces <https://w3id.org/np/RAoriginal.../my-view-kind> .
     }
     ```
 - Always add an `rdfs:label` on `this:` in pubinfo with a short human-readable label for the nanopub. This can be omitted only if the nanopub has an introduced resource (via `npx:introduces`) that already has an `rdfs:label` in the assertion graph. Do not prefix labels with "Template: " or similar prefixes — just use the plain name.
