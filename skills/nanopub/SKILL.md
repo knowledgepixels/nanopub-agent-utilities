@@ -206,14 +206,15 @@ Nanopub SPARQL templates use an extended version of the grlc syntax for placehol
 
 **Result column labels:** When a result column holds a URI, the UI renders it nicely if there is a companion `?<name>_label` variable. For example, a `?view` column with a `?view_label` variable will display the label text linked to the URI. For nanopub URI columns, use `("^" as ?np_label)` to show a short clickable symbol instead of the full URI. Always place `?np` and `?np_label` as the last two columns in the SELECT clause, in that order (`?np` before `?np_label`).
 
-**Multi-value result columns:** Result columns (not placeholders) can use the `_multi` and `_multi_iri` suffixes to hold concatenated values produced by `group_concat`. Use `_multi_iri` when the concatenated values are URIs (space-separated) and `_multi` for literals (newline-separated). Build these in the SELECT clause with `group_concat`:
+**Multi-value result columns:** Result columns (not placeholders) can use the `_multi`, `_multi_iri`, and `_multi_val` suffixes to hold concatenated values produced by `group_concat`:
 
-- **IRI lists** (space-separated): `(group_concat(str(?item); separator=" ") as ?items_multi_iri)`
-- **Literal lists** (newline-separated, with escaping): `(group_concat(replace(replace(?text, "\\\\", "\\\\\\\\"), "\\n", "\\\\n"); separator="\\n") as ?texts_multi)` — this escapes backslashes and newlines in individual values so they can be safely split on newlines later.
+- **`_multi_iri`** — all values are URIs, separated by any whitespace (spaces, newlines, or tabs). Example: `(group_concat(str(?item); separator=" ") as ?items_multi_iri)`
+- **`_multi`** — all values are literals, separated by newlines, with escaping. Example: `(group_concat(replace(replace(?text, "\\\\", "\\\\\\\\"), "[\r\n]+", "\\\\n"); separator="\n") as ?texts_multi)`
+- **`_multi_val`** — values can be a mix of URIs and literals, separated by newlines, with escaping. Each value is checked individually: URIs (matching `https?://`) are rendered as links, literals are rendered as text or sanitized HTML. Example: `(group_concat(replace(replace(str(?val), "\\\\", "\\\\\\\\"), "[\r\n]+", "\\\\n"); separator="\n") as ?values_multi_val)`
 
-The escaping pattern `replace(replace(?val, "\\\\", "\\\\\\\\"), "\\n", "\\\\n")` should always be applied when concatenating literals with a newline separator: first escape existing backslashes (`\` → `\\`), then escape existing newlines (newline → `\n`).
+The escaping pattern `replace(replace(?val, "\\\\", "\\\\\\\\"), "[\r\n]+", "\\\\n")` should always be applied when concatenating literals with a newline separator: first escape existing backslashes (`\` → `\\`), then replace any sequence of CR/LF characters with the two-character escape `\n`.
 
-The `_label` naming convention also applies to multi-value columns. For a `?things_multi_iri` column holding concatenated URIs, use `?things_label_multi` as its label companion holding the corresponding concatenated literal labels. For example: `?authors_multi_iri` (space-separated ORCIDs) paired with `?authors_label_multi` (newline-separated names with escaping).
+The `_label` naming convention also applies to multi-value columns. For a `?things_multi_iri` column holding concatenated URIs, use `?things_label_multi` as its label companion holding the corresponding concatenated literal labels. For example: `?authors_multi_iri` (whitespace-separated ORCIDs) paired with `?authors_label_multi` (newline-separated names with escaping).
 
 **Calling a query via the API:**
 
@@ -315,7 +316,7 @@ sub:pubinfo {
     rdfs:label "short human-readable label" ;  # can be omitted if an introduced resource already has an rdfs:label in the assertion
     dct:creator orcid:USER-ORCID ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> .
-    # only if the nanopub supersedes an earlier one:
+    # only if the nanopub supersedes an earlier one (requires same signing key as the original):
     # npx:supersedes <original-nanopub-uri> .
     # only if the nanopub introduces a new concept/resource as its main element:
     # npx:introduces <main-element-IRI> .
@@ -381,7 +382,7 @@ This ensures the type-specific triple store is created and queries for that type
 
 ### 7. Wait for explicit publishing instruction
 
-Do **not** publish automatically. After signing and testing, stop and wait for the user to explicitly ask you to publish. When they do, ask: **test server or live network?**
+Do **not** publish automatically. After signing and testing, **stop and present the results to the user**. Wait for the user to explicitly ask you to publish. Do not interpret positive feedback about test results as a publishing instruction. When the user explicitly asks to publish, ask: **test server or live network?**
 
 ```bash
 # Test server
@@ -428,7 +429,7 @@ Show:
 
 ## Important Notes
 
-- **Never publish unless explicitly instructed to do so.** After signing and testing, always wait for the user to explicitly ask you to publish. Do not publish automatically as part of the workflow.
+- **CRITICAL: Never publish unless explicitly instructed to do so.** After signing and testing, always stop and wait for the user to explicitly ask you to publish. Do not publish automatically as part of the workflow. Do not publish just because the user says the results "look good" — only publish when the user gives a clear, unambiguous instruction to publish (e.g. "publish it", "go ahead and publish"). This applies to all nanopubs: queries, views, templates, retractions of previous versions, etc.
 - **Never write a Java class** for one-off nanopub creation. Always create the TriG file directly and use the CLI jar.
 - Download the CLI jar from Maven Central if not present (see step 4); reuse it across invocations by keeping it in the working directory.
 - Nanopubs use **trusty URIs** — the `sign` command computes and replaces the placeholder URI everywhere in the file.
@@ -436,12 +437,13 @@ Show:
 - Never copy the original nanopub's author ORCID into `dct:creator`/`prov:wasAttributedTo` — always use the current user's ORCID from their profile.
 - Always get the current UTC time by running `date -u +"%Y-%m-%dT%H:%M:%SZ"` for `dct:created` timestamps. Never use a date-only or zeroed time. When updating a nanopub before publishing (e.g. after revisions), always refresh the timestamp to the current time.
 - If a bad nanopub was published (e.g. missing `npx:signedBy`), retract it with `retract -i <uri> -p` before publishing the corrected version.
+- **Superseding requires the same signing key**: `npx:supersedes` is only valid when the new nanopub is signed with the same key (same public key hash) as the original. Before adding `npx:supersedes`, verify that the current signing key matches the original nanopub's public key. If the keys differ (e.g. the original was signed via Nanodash with a different key than the local `~/.nanopub/id_rsa`), do **not** use `npx:supersedes` — instead use `prov:wasDerivedFrom` to link to the original.
 - Provenance should reflect the actual origin of the assertion content: use `prov:wasDerivedFrom` when content comes from an external source, `prov:wasAttributedTo` when the user authored it, or both when the user modified external content.
 - **Introduced vs embedded resources**: Nanopubs can declare resources in pubinfo with `npx:introduces` and/or `npx:embeds`, which serve different purposes:
   - **`npx:introduces`** declares a stable identity for a resource (e.g. a view kind, class, or query definition). When the nanopub is superseded, the introduced resource **must keep the same IRI** from the original nanopub — use the full absolute URI (e.g. `<https://w3id.org/np/RAxxxxx/my-resource-kind>`) rather than `sub:my-resource-kind`, so the IRI does not change with each new trusty URI. The new nanopub re-introduces the same resource at the same stable IRI. Use this for resources that others may reference by IRI.
   - **`npx:embeds`** declares a concrete instance that is contained in this specific nanopub. Each time the nanopub is superseded, the embedded resource naturally gets a new IRI (since it lives under the new nanopub's trusty URI via `sub:`). Use this for the version-specific content.
   - Most nanopubs use only one: `npx:introduces` for templates, classes, and other referenceable definitions; `npx:embeds` for instances and content.
-  - **Resource views use both**: the embedded resource is the concrete view instance (with query, type, templates, etc.) and the introduced resource is the abstract view kind (a stable identifier). They are linked in the assertion with `dct:isVersionOf`. When superseding, the embedded resource (`sub:my-view`) naturally gets a new IRI, but the introduced resource must use the **original full URI** so it stays stable:
+  - **Resource views use both**: the embedded resource is the concrete view instance (with query, type, templates, etc.) and the introduced resource is the abstract view kind (a stable identifier). They are linked in the assertion with `dct:isVersionOf`. The view-kind is only declared via `npx:introduces` in pubinfo — do **not** add a type triple (e.g. `sub:my-view-kind a gen:ResourceView`) in the assertion. When superseding, the embedded resource (`sub:my-view`) naturally gets a new IRI, but the introduced resource must use the **original full URI** so it stays stable:
     ```turtle
     sub:assertion {
       sub:my-view a gen:ResourceView, gen:TabularView ;
@@ -451,8 +453,7 @@ Show:
         dct:title "📊 My View" ;
         gen:hasViewQuery <query-np-uri> ;
         gen:appliesToInstancesOf gen:IndividualAgent .
-      # Same here — sub:my-view-kind for new, full URI for superseding:
-      <https://w3id.org/np/RAoriginal.../my-view-kind> a gen:ResourceView .
+      # No type triple for the view-kind here!
     }
     sub:pubinfo {
       this: npx:embeds sub:my-view ;
