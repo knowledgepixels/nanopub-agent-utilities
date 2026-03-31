@@ -322,6 +322,10 @@ sub:pubinfo {
     # npx:introduces <main-element-IRI> .
     # only if created at a specific tool instance (e.g. nanodash):
     # npx:wasCreatedAt <https://nanodash.knowledgepixels.com/> .
+    # Always add template links (do NOT skip these):
+    # nt:wasCreatedFromTemplate <assertion-template-uri> .
+    # nt:wasCreatedFromProvenanceTemplate <provenance-template-uri> .
+    # nt:wasCreatedFromPubinfoTemplate <pubinfo-template-uri1>, <pubinfo-template-uri2> .
 }
 ```
 
@@ -466,7 +470,7 @@ Show:
 - **Personal information policy**: Only include personal information (names, emails, affiliations, ORCIDs) in a nanopub if it is already permanently and openly published (e.g. in a published paper or made available by the person under an open license).
 - When it seems likely that a similar nanopub may already exist on the network (e.g. for well-known resources, popular DOIs, or common assertions), consider checking for duplicates before creating a new one. DOIs are case-insensitive but the nanopub network treats different cases as separate URIs.
 - Always validate a TriG file with `check` before signing to catch structural errors early.
-- **Always include template links in pubinfo**: When a nanopub follows the structure of known assertion, provenance, or pubinfo templates, include `nt:wasCreatedFromAssertionTemplate`, `nt:wasCreatedFromProvenanceTemplate`, and `nt:wasCreatedFromPubinfoTemplate` links in pubinfo — even when the nanopub is not generated through the template forms. This makes nanopubs easier to discover, derive from, and update later via the template UI.
+- **Always include template links in pubinfo — no exceptions**: Every nanopub (including assertion/provenance/pubinfo template nanopubs themselves) must include `nt:wasCreatedFromTemplate`, `nt:wasCreatedFromProvenanceTemplate`, and `nt:wasCreatedFromPubinfoTemplate` links in pubinfo, even when the nanopub is not generated through the template forms. Determine the matching templates by looking at recently published nanopubs with a similar structure. Never skip these links — they make nanopubs discoverable, derivable, and updatable via the template UI.
 - **`npx:hasNanopubType`** can be set explicitly in pubinfo, but it is not necessary if it can be inferred — e.g. from the types of introduced (`npx:introduces`) or embedded (`npx:embeds`) resources. See [nanosession 8 slides](https://github.com/knowledgepixels/slides/blob/main/nanosession8-typeslabels/slides.md) for the full type/label determination rules.
 - **Superseding referenced nanopubs**: When superseding a query template that other nanopubs reference (e.g. a view's `gen:hasViewQuery`), also supersede those referencing nanopubs so they point to the new query version.
 - **One predicate per statement in templates**: Each template statement should use only one predicate for a given piece of information. Do not duplicate the same value under multiple predicates (e.g. don't use both `schema:name` and `rdfs:label` for the same title). When in doubt, prefer `rdfs:label` as the default predicate for labels/titles.
