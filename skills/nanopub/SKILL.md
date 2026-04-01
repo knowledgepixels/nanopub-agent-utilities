@@ -257,6 +257,29 @@ NP_B64=$(base64 -w0 tmp/<name>-signed.trig | tr '+/' '-_' | tr -d '=')
 xdg-open "https://nanodash.knowledgepixels.com/view?_nanopub_trig=${NP_B64}"
 ```
 
+**Constructing a Nanodash publish URL with pre-filled values:**
+
+You can construct a URL that opens a Nanodash publish form with a specific template and pre-filled placeholder values. This is useful for migrating nanopubs to a new template, or for sharing a ready-to-publish link with someone.
+
+The URL format is:
+
+```
+https://nanodash.knowledgepixels.com/publish?template=<TEMPLATE-URI>&param_<placeholder1>=<value1>&param_<placeholder2>=<value2>&...
+```
+
+- `template` — the assertion template URI to use
+- `param_<name>` — fills the template placeholder named `sub:<name>`. For example, `param_headline=Hello` fills the `sub:headline` placeholder
+- Values should be URL-encoded (use `urllib.parse.urlencode` in Python or equivalent)
+- For IRI placeholders (e.g. `sub:space` being a `GuidedChoicePlaceholder`), pass the full URI as the value
+- Optional placeholders (like `sub:datePublished` or `sub:externalUrl`) can simply be omitted if empty
+- The base URL can be any Nanodash instance (e.g. `https://nanodash.petapico.org/publish`, `http://localhost:37373/publish`)
+
+Example — pre-filling a news article template:
+
+```
+https://nanodash.knowledgepixels.com/publish?template=https%3A%2F%2Fw3id.org%2Fnp%2FRAxxxxx&param_headline=My+News+Title&param_body=Article+body+text&param_datePublished=2026-01-15&param_space=https%3A%2F%2Fw3id.org%2Fspaces%2Fmy-space
+```
+
 ### 2. Check the user's profile
 
 Before creating the TriG file, read `~/.nanopub/profile.yaml` to get the user's ORCID:
